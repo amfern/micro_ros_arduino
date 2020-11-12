@@ -15,6 +15,8 @@ if [ $OPTIND -eq 1 ]; then
     PLATFORMS+=("teensy3")
     PLATFORMS+=("cortex_m0")
     PLATFORMS+=("cortex_m3")
+    PLATFORMS+=("portenta-m4")
+    PLATFORMS+=("portenta-m7")
 fi
 
 shift $((OPTIND-1))
@@ -110,6 +112,7 @@ if [[ " ${PLATFORMS[@]} " =~ " teensy3 " ]]; then
     mkdir -p /arduino_project/src/mk20dx256
     cp -R firmware/build/libmicroros.a /arduino_project/src/mk20dx256/libmicroros.a
 fi
+
 ######## Build for Teensy 4 ########
 if [[ " ${PLATFORMS[@]} " =~ " teensy4 " ]]; then
     rm -rf firmware/build
@@ -122,6 +125,34 @@ if [[ " ${PLATFORMS[@]} " =~ " teensy4 " ]]; then
 
     mkdir -p /arduino_project/src/imxrt1062/fpv5-d16-hard
     cp -R firmware/build/libmicroros.a /arduino_project/src/imxrt1062/fpv5-d16-hard/libmicroros.a
+fi
+
+######## Build for Arduino Portenta M4 core ########
+if [[ " ${PLATFORMS[@]} " =~ " portenta-m4 " ]]; then
+    rm -rf firmware/build
+
+    export TOOLCHAIN_PREFIX=/uros_ws/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
+    ros2 run micro_ros_setup build_firmware.sh /arduino_project/extras/library_generation/portenta-m4_toolchain.cmake /arduino_project/extras/library_generation/colcon.meta
+
+    find firmware/build/include/ -name "*.c"  -delete
+    cp -R firmware/build/include/* /arduino_project/src/ 
+
+    mkdir -p /arduino_project/src/cortex-m4/fpv4-sp-d16-softfp
+    cp -R firmware/build/libmicroros.a /arduino_project/src/cortex-m4/fpv4-sp-d16-softfp/libmicroros.a
+fi
+
+######## Build for Arduino Portenta M7 core ########
+if [[ " ${PLATFORMS[@]} " =~ " portenta-m7 " ]]; then
+    rm -rf firmware/build
+
+    export TOOLCHAIN_PREFIX=/uros_ws/gcc-arm-none-eabi-7-2017-q4-major/bin/arm-none-eabi-
+    ros2 run micro_ros_setup build_firmware.sh /arduino_project/extras/library_generation/portenta-m7_toolchain.cmake /arduino_project/extras/library_generation/colcon.meta
+
+    find firmware/build/include/ -name "*.c"  -delete
+    cp -R firmware/build/include/* /arduino_project/src/ 
+
+    mkdir -p /arduino_project/src/cortex-m7/fpv5-d16-softfp
+    cp -R firmware/build/libmicroros.a /arduino_project/src/cortex-m7/fpv5-d16-softfp/libmicroros.a
 fi
 
 ######## Generate extra files ########
