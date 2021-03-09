@@ -18,6 +18,7 @@ if [ $OPTIND -eq 1 ]; then
     PLATFORMS+=("cortex_m3")
     # PLATFORMS+=("portenta-m4")
     PLATFORMS+=("portenta-m7")
+    PLATFORMS+=("inav-m7")
 fi
 
 shift $((OPTIND-1))
@@ -163,6 +164,20 @@ if [[ " ${PLATFORMS[@]} " =~ " portenta-m7 " ]]; then
 
     mkdir -p /arduino_project/src/cortex-m7/fpv5-d16-softfp
     cp -R firmware/build/libmicroros.a /arduino_project/src/cortex-m7/fpv5-d16-softfp/libmicroros.a
+fi
+
+######## Build for Inav M7 core  ########
+if [[ " ${PLATFORMS[@]} " =~ " inav-m7 " ]]; then
+    rm -rf firmware/build
+
+    export TOOLCHAIN_PREFIX=/uros_ws/gcc-arm-none-eabi-9-2019-q4-major/bin/arm-none-eabi-
+    ros2 run micro_ros_setup build_firmware.sh /arduino_project/extras/library_generation/inav-m7_toolchain.cmake /arduino_project/extras/library_generation/colcon.meta
+
+    find firmware/build/include/ -name "*.c"  -delete
+    cp -R firmware/build/include/* /arduino_project/src/
+
+    mkdir -p /arduino_project/src/cortex-m7/fpv5-sp-d16-hardfp
+    cp -R firmware/build/libmicroros.a /arduino_project/src/cortex-m7/fpv5-sp-d16-hardfp/libmicroros.a
 fi
 
 ######## Generate extra files ########
