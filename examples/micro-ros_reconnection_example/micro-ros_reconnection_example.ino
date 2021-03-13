@@ -18,6 +18,7 @@ rcl_timer_t timer;
 rclc_executor_t executor;
 rcl_allocator_t allocator;
 rcl_publisher_t publisher;
+rcl_publisher_t publisher_2;
 std_msgs__msg__Int32 msg;
 bool micro_ros_init_successful;
 
@@ -52,12 +53,18 @@ bool create_entities()
 		ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
 		"std_msgs_msg_Int32"));
 
+  RCCHECK(rclc_publisher_init_best_effort(
+		&publisher,
+		&node,
+		ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
+		"std_msgs_msg_Int32_2"));
+
 	// create timer,
-	const unsigned int timer_timeout = 1000;
+	const unsigned int timer_timeout = 1;
 	RCCHECK(rclc_timer_init_default(
 		&timer,
 		&support,
-		RCL_MS_TO_NS(timer_timeout),
+		RCL_US_TO_NS(timer_timeout),
 		timer_callback));
 
 	// create executor
@@ -89,21 +96,21 @@ void setup() {
 }
 
 void loop() {
-  uint32_t delay = 100000;
-  if (RMW_RET_OK == rmw_uros_ping_agent(50, 2))
-  {
-    delay = 500000;
-    if (!micro_ros_init_successful) {
+  // uint32_t delay = 100000;
+  // uint32_t delay = 2000000;
+
+  if (micro_ros_init_successful) {
+    rclc_executor_spin_some(&executor, RCL_US_TO_NS(1));
+  } else {
+    // if (RMW_RET_OK == frmw_uros_ping_agent(1000, 1)) {
+    if (true) {
       create_entities();
+      delayMicroseconds(5000000); 
     } else {
-      rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10));
+      destroy_entities();
     }
-  } 
-  else if (micro_ros_init_successful)
-  {
-    destroy_entities();
   }
 
   digitalWrite(LED_PIN, !digitalRead(LED_PIN));
-  delayMicroseconds(delay); 
+  // delayMicroseconds(delay); 
 }
