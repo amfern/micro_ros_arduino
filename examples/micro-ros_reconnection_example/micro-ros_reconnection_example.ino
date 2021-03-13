@@ -27,6 +27,7 @@ void timer_callback(rcl_timer_t * timer, int64_t last_call_time)
 	(void) last_call_time;
 	if (timer != NULL) {
 		rcl_publish(&publisher, &msg, NULL);
+    rcl_publish(&publisher_2, &msg, NULL);
 		msg.data++;
 	}
 }
@@ -54,7 +55,7 @@ bool create_entities()
 		"std_msgs_msg_Int32"));
 
   RCCHECK(rclc_publisher_init_best_effort(
-		&publisher,
+		&publisher_2,
 		&node,
 		ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Int32),
 		"std_msgs_msg_Int32_2"));
@@ -100,7 +101,7 @@ void loop() {
   // uint32_t delay = 2000000;
 
   if (micro_ros_init_successful) {
-    rclc_executor_spin_some(&executor, RCL_US_TO_NS(1));
+    rclc_executor_spin_some(&executor, 0);
   } else {
     // if (RMW_RET_OK == frmw_uros_ping_agent(1000, 1)) {
     if (true) {
