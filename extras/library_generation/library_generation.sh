@@ -36,6 +36,12 @@ ros2 run micro_ros_setup create_firmware_ws.sh generate_lib
 
 ######## Adding extra packages ########
 pushd firmware/mcu_ws > /dev/null
+    # Workaround: Applying run_session timeout fix for Micro-XRCE-DDS-Client
+    pushd eProsima/Micro-XRCE-DDS-Client > /dev/null
+        git remote add amfern https://github.com/amfern/Micro-XRCE-DDS-Client
+        git fetch amfern run_session_atleast_once
+        git checkout run_session_atleast_once
+    popd > /dev/null
 
     # Workaround: Copy just tf2_msgs
     git clone -b foxy https://github.com/ros2/geometry2
