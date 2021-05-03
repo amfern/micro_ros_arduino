@@ -35,7 +35,9 @@
                 "-DUCLIENT_PROFILE_DISCOVERY=OFF",
                 "-DUCLIENT_PROFILE_SERIAL=OFF",
                 "-UCLIENT_PROFILE_STREAM_FRAMING=ON",
-                "-DUCLIENT_PROFILE_CUSTOM_TRANSPORT=ON"
+                "-DUCLIENT_PROFILE_CUSTOM_TRANSPORT=ON",
+                "-DUCLIENT_MAX_SESSION_CONNECTION_ATTEMPTS=3",
+                "-DUCLIENT_MIN_SESSION_CONNECTION_INTERVAL=1"
             ]
         },
         "rmw_microxrcedds": {
@@ -46,7 +48,8 @@
                 "-DRMW_UXRCE_MAX_SERVICES=1",
                 "-DRMW_UXRCE_MAX_CLIENTS=1",
                 "-DRMW_UXRCE_MAX_HISTORY=4",
-                "-DRMW_UXRCE_TRANSPORT=custom"
+                "-DRMW_UXRCE_TRANSPORT=custom",
+                "-DRMW_UXRCE_ENTITY_CREATION_DESTROY_TIMEOUT=0"
             ]
         }
     }
